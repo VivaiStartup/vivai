@@ -1,0 +1,8 @@
+{
+  "name": "VIVaI - Green Care & Marketplace",
+  "description": "An MVP platform for plant care, AI-powered health diagnosis, and a localized marketplace connecting plant lovers with nurseries.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

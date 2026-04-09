@@ -1,0 +1,29 @@
+# Env / segreti
+.env
+.env.*
+vivai/.env
+vivai-api/.env
+
+# Dipendenze
+node_modules/
+vendor/
+
+# Build frontend
+dist/
+build/
+vivai/dist/
+vivai/build/
+
+# Log e cache
+*.log
+storage/logs/
+tmp/
+cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# File/cartelle da NON versionare
+Git/
