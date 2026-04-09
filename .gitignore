@@ -8,11 +8,7 @@ vivai-api/.env
 node_modules/
 vendor/
 
-# Build frontend
-dist/
-build/
-vivai/dist/
-vivai/build/
+
 
 # Log e cache
 *.log
