@@ -75,8 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 ini_set('display_errors', $isLocal ? '1' : '0');
 error_reporting(E_ALL);
 
-ini_set('display_errors', '1');
-error_reporting(E_ALL);
+
 function json_ok($data, int $code = 200): void {
     header('Content-Type: application/json; charset=utf-8');
     http_response_code($code);
@@ -142,7 +141,7 @@ if ($method === 'GET' && $path === '/auth/google/callback') {
     $clientSecret = getenv('GOOGLE_CLIENT_SECRET');
     if (!$clientId || !$clientSecret) json_error('Missing GOOGLE_CLIENT_ID/SECRET', 500);
 
-    $redirectUri = 'http://localhost:8000/api/auth/google/callback';
+    $redirectUri = $apiCallbackUrl;
 
     $code = $_GET['code'] ?? null;
     $state = $_GET['state'] ?? null;
