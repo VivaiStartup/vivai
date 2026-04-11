@@ -1,8 +1,7 @@
----
 deployment:
   tasks:
-    - export FRONT=/home/vivaiit/public_html/
-    - export APIAPP=/home/vivaiit/project/live-api/
+    - export FRONT=/home/vivaiit/public_html
+    - export APIAPP=/home/vivaiit/public_html/apiapp
 
     - /bin/mkdir -p $FRONT
     - /bin/mkdir -p $APIAPP
