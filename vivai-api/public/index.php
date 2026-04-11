@@ -16,6 +16,9 @@ session_set_cookie_params([
 session_start();
 require_once __DIR__ . '/../src/myPlants.php';
 
+
+
+
 // mette questo *prima* di usare getenv()
 $envPath = __DIR__ . '/../.env';
 if (file_exists($envPath)) {
@@ -31,9 +34,21 @@ if (file_exists($envPath)) {
   }
 }
 
+$appEnv = getenv('APP_ENV') ?: 'production';
+$isLocal = ($appEnv === 'local');
+
+
+$frontendUrl = $isLocal
+    ? 'http://localhost:40001'
+    : 'https://viv-ai.it';
+
+$apiCallbackUrl = $isLocal
+    ? 'http://localhost:8000/api/auth/google/callback'
+    : 'https://viv-ai.it/api/auth/google/callback';
+
 // ===== DEV CORS (opzionale) =====
 // Se poi userai un proxy dal frontend, puoi togliere tutto questo blocco.
-$allowedOrigin = 'http://localhost:40001'; // cambia se il tuo frontend gira su altra porta (es. 5173)
+$allowedOrigin  = $frontendUrl;// cambia se il tuo frontend gira su altra porta (es. 5173)
 header("Access-Control-Allow-Origin: {$allowedOrigin}");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -42,7 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
+
+
 // ===============================
+
+ini_set('display_errors', $isLocal ? '1' : '0');
+error_reporting(E_ALL);
+
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 function json_ok($data, int $code = 200): void {
@@ -81,7 +102,7 @@ if ($method === 'GET' && $path === '/auth/google/start') {
     $clientId = getenv('GOOGLE_CLIENT_ID');
     if (!$clientId) json_error('Missing GOOGLE_CLIENT_ID', 500);
 
-    $redirectUri = 'http://localhost:8000/api/auth/google/callback';
+    $redirectUri = $apiCallbackUrl;
 
     // state anti-CSRF
     $state = bin2hex(random_bytes(16));
@@ -189,7 +210,7 @@ $sid = create_session($userId);
 set_sid_cookie($sid);
 
 
-    header('Location: http://localhost:40001/');
+    header('Location: '.$frontendUrl.'/');
     exit;
 }
 if ($method === 'GET' && $path === '/auth/me') {
