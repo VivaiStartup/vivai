@@ -10,12 +10,14 @@ function create_session(int $userId): string {
 }
 
 function set_sid_cookie(string $sid): void {
+  $isLocal = (getenv('APP_ENV') ?: 'production') === 'local';
+
   setcookie('sid', $sid, [
     'expires' => time() + 60*60*24*7,
     'path' => '/',
     'httponly' => true,
     'samesite' => 'Lax',
-    'secure' => false, // localhost http
+    'secure' => !$isLocal,
   ]);
 }
 

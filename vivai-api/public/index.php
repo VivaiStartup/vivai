@@ -1,6 +1,10 @@
 <?php
 // vivai-api/public/index.php
-ini_set('session.save_path', __DIR__ . '\sessions');
+$sessionPath = __DIR__ . '/sessions';
+if (!is_dir($sessionPath)) {
+    mkdir($sessionPath, 0775, true);
+}
+ini_set('session.save_path', $sessionPath);
 
 session_set_cookie_params([
   'lifetime' => 0,
@@ -37,6 +41,13 @@ if (file_exists($envPath)) {
 $appEnv = getenv('APP_ENV') ?: 'production';
 $isLocal = ($appEnv === 'local');
 
+session_set_cookie_params([
+  'lifetime' => 0,
+  'path' => '/',
+  'httponly' => true,
+  'samesite' => 'Lax',
+  'secure' => !$isLocal,
+]);
 
 $frontendUrl = $isLocal
     ? 'http://localhost:40001'
@@ -142,11 +153,7 @@ if ($method === 'GET' && $path === '/auth/google/callback') {
     
   $sessionState = $_SESSION['oauth_state'] ?? null;
 if (!$sessionState || !$state || !hash_equals($sessionState, $state)) {
-  //print_r($sessionState);
-  print_r($state);
-
   json_error('Invalid state', 400);
- 
 }
 unset($_SESSION['oauth_state']);
 
